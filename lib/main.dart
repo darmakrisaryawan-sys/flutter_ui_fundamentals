@@ -43,6 +43,48 @@ class MyApp extends StatelessWidget {
                 ),
               ],
             ),
+            const SizedBox(height: 24),
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Column(
+                  children: [
+                    Text(
+                      '3',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text('Modul'),
+                  ],
+                ),
+                Column(
+                  children: [
+                    Text(
+                      '5',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text('Materi'),
+                  ],
+                ),
+                Column(
+                  children: [
+                    Text(
+                      '2',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text('Selesai'),
+                  ],
+                ),
+              ],
+            ),
           ],
         ),
       ),
