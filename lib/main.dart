@@ -73,15 +73,21 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   final List<Map<String, dynamic>> topics = const [
-    {'title': 'Dart Fundamentals', 'category': 'Dart'},
-    {'title': 'Flutter UI Fundamentals', 'category': 'Flutter'},
-    {'title': 'Git & GitHub', 'category': 'Version Control'},
-    {'title': 'Widget Layout', 'category': 'Flutter UI'},
-    {'title': 'Made Darma Krisaryawan - 2415051081', 'category': 'Student'},
+    {'title': 'Dart Fundamentals', 'category': 'Dart', 'done': true},
+    {'title': 'Flutter UI Fundamentals', 'category': 'Flutter', 'done': true},
+    {'title': 'Git & GitHub', 'category': 'Version Control', 'done': false},
+    {'title': 'Widget Layout', 'category': 'Flutter UI', 'done': false},
+    {
+      'title': 'Made Darma Krisaryawan - 2415051081',
+      'category': 'Student',
+      'done': false,
+    },
   ];
 
   @override
   Widget build(BuildContext context) {
+    final completedCount = topics.where((item) => item['done'] == true).length;
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter UI Fundamentals',
@@ -96,7 +102,6 @@ class MyApp extends StatelessWidget {
                 radius: 46,
                 backgroundImage: AssetImage('assets/images/profile.jpg'),
               ),
-
               const SizedBox(height: 12),
 
               Text(
@@ -134,7 +139,11 @@ class MyApp extends StatelessWidget {
                     children: [
                       buildStatCard('3', 'Modul', Icons.menu_book),
                       buildStatCard('5', 'Materi', Icons.book),
-                      buildStatCard('2', 'Selesai', Icons.check_circle),
+                      buildStatCard(
+                        '$completedCount',
+                        'Selesai',
+                        Icons.check_circle,
+                      ),
                     ],
                   ),
                 ),
@@ -145,6 +154,16 @@ class MyApp extends StatelessWidget {
               const GreetingCard(),
 
               const SizedBox(height: 12),
+
+              Text(
+                '$completedCount dari ${topics.length} topik selesai',
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              const SizedBox(height: 8),
 
               const Text(
                 'Materi Pembelajaran',
@@ -159,11 +178,21 @@ class MyApp extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final topic = topics[index];
 
+                    final bool isDone = topic['done'] == true;
+
                     return Card(
                       child: ListTile(
-                        leading: const Icon(Icons.menu_book),
+                        leading: Icon(
+                          isDone
+                              ? Icons.check_circle
+                              : Icons.radio_button_unchecked,
+                        ),
                         title: Text(topic['title']),
-                        subtitle: Text(topic['category']),
+                        subtitle: Text(
+                          '${topic['category']} • '
+                          '${isDone ? 'Selesai' : 'Belum selesai'}',
+                        ),
+                        trailing: Icon(isDone ? Icons.done : Icons.pending),
                       ),
                     );
                   },
