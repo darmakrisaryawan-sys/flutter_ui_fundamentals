@@ -28,80 +28,29 @@ Widget buildStatCard(String value, String label, IconData icon) {
   );
 }
 
-class GreetingCard extends StatefulWidget {
-  const GreetingCard({super.key});
-
-  @override
-  State<GreetingCard> createState() => _GreetingCardState();
-}
-
-class _GreetingCardState extends State<GreetingCard> {
-  final TextEditingController nameController = TextEditingController();
-
-  String message = 'Masukkan nama Anda';
-
-  @override
-  void dispose() {
-    nameController.dispose();
-    super.dispose();
-  }
-
-  void showGreeting() {
-    setState(() {
-      message = 'Halo, ${nameController.text}!';
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            TextField(
-              controller: nameController,
-              decoration: const InputDecoration(
-                labelText: 'Nama',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: showGreeting,
-              child: const Text('Tampilkan'),
-            ),
-            const SizedBox(height: 12),
-            Text(message, style: const TextStyle(fontSize: 16)),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter UI Fundamentals',
-      home: const DashboardPage(),
-    );
-  }
-}
-
-class DashboardPage extends StatelessWidget {
+class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
+
+  @override
+  State<DashboardPage> createState() => _DashboardPageState();
+}
+
+class _DashboardPageState extends State<DashboardPage> {
+  late Future<Map<String, dynamic>> studentFuture;
+
+  @override
+  void initState() {
+    super.initState();
+
+    studentFuture = loadStudentData();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Learning Dashboard')),
       body: FutureBuilder<Map<String, dynamic>>(
-        future: loadStudentData(),
+        future: studentFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -189,6 +138,8 @@ class DashboardPage extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final course = courses[index] as Map<String, dynamic>;
 
+                      final status = course['status'] as String;
+
                       return Card(
                         child: ListTile(
                           leading: CircleAvatar(
@@ -200,7 +151,7 @@ class DashboardPage extends StatelessWidget {
                             '${course['credits']} SKS',
                           ),
                           trailing: Text(
-                            course['status'],
+                            status,
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
@@ -213,6 +164,19 @@ class DashboardPage extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Flutter UI Fundamentals',
+      home: const DashboardPage(),
     );
   }
 }
