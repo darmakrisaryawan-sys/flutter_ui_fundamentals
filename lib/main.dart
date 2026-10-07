@@ -15,16 +15,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Flutter UI Fundamentals'),
-        ),
+        appBar: AppBar(title: const Text('Flutter UI Fundamentals')),
         body: Center(
           child: Text(
             '$studentId\n$studentName',
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 20,
-            ),
+            style: const TextStyle(fontSize: 20),
           ),
         ),
       ),
