@@ -3,6 +3,20 @@ import 'package:flutter/material.dart';
 const String studentName = 'Made Darma Krisaryawan';
 const String studentId = '2415051081';
 
+Widget buildStatCard(String value, String label, IconData icon) {
+  return Column(
+    children: [
+      Icon(icon, size: 28),
+      const SizedBox(height: 4),
+      Text(
+        value,
+        style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+      ),
+      Text(label),
+    ],
+  );
+}
+
 void main() {
   runApp(const MyApp());
 }
@@ -55,45 +69,9 @@ class MyApp extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Column(
-                        children: [
-                          const Text(
-                            '3',
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          const Text('Modul'),
-                        ],
-                      ),
-                      Column(
-                        children: [
-                          const Text(
-                            '5',
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          const Text('Materi'),
-                        ],
-                      ),
-                      Column(
-                        children: [
-                          const Text(
-                            '2',
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          const Text('Selesai'),
-                        ],
-                      ),
+                      buildStatCard('3', 'Modul', Icons.menu_book),
+                      buildStatCard('5', 'Materi', Icons.book),
+                      buildStatCard('2', 'Selesai', Icons.check_circle),
                     ],
                   ),
                 ),
