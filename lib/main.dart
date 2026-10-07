@@ -17,6 +17,58 @@ Widget buildStatCard(String value, String label, IconData icon) {
   );
 }
 
+class GreetingCard extends StatefulWidget {
+  const GreetingCard({super.key});
+
+  @override
+  State<GreetingCard> createState() => _GreetingCardState();
+}
+
+class _GreetingCardState extends State<GreetingCard> {
+  final TextEditingController nameController = TextEditingController();
+
+  String message = 'Masukkan nama Anda';
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    super.dispose();
+  }
+
+  void showGreeting() {
+    setState(() {
+      message = 'Halo, ${nameController.text}!';
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: const InputDecoration(
+                labelText: 'Nama',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 12),
+            ElevatedButton(
+              onPressed: showGreeting,
+              child: const Text('Tampilkan'),
+            ),
+            const SizedBox(height: 12),
+            Text(message, style: const TextStyle(fontSize: 16)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 void main() {
   runApp(const MyApp());
 }
@@ -33,50 +85,63 @@ class MyApp extends StatelessWidget {
         appBar: AppBar(title: const Text('Flutter UI Fundamentals')),
         body: Padding(
           padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const CircleAvatar(
-                radius: 46,
-                backgroundImage: AssetImage('assets/images/profile.jpg'),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                studentName,
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const CircleAvatar(
+                  radius: 46,
+                  backgroundImage: AssetImage('assets/images/profile.jpg'),
                 ),
-              ),
-              Text(studentId, style: const TextStyle(fontSize: 18)),
-              const SizedBox(height: 16),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.phone_android, size: 30),
-                  SizedBox(width: 8),
-                  Text(
-                    'Mobile Programming Student',
-                    style: TextStyle(fontSize: 18),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      buildStatCard('3', 'Modul', Icons.menu_book),
-                      buildStatCard('5', 'Materi', Icons.book),
-                      buildStatCard('2', 'Selesai', Icons.check_circle),
-                    ],
+                const SizedBox(height: 16),
+
+                Text(
+                  studentName,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-              ),
-            ],
+
+                Text(studentId, style: const TextStyle(fontSize: 18)),
+
+                const SizedBox(height: 16),
+
+                const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.phone_android, size: 30),
+                    SizedBox(width: 8),
+                    Text(
+                      'Mobile Programming Student',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 24),
+
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        buildStatCard('3', 'Modul', Icons.menu_book),
+                        buildStatCard('5', 'Materi', Icons.book),
+                        buildStatCard('2', 'Selesai', Icons.check_circle),
+                      ],
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                const GreetingCard(),
+              ],
+            ),
           ),
         ),
       ),
