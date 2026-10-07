@@ -21,19 +21,28 @@ class MyApp extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            const CircleAvatar(
+              radius: 46,
+              backgroundImage: AssetImage('assets/images/profile.jpg'),
+            ),
+            const SizedBox(height: 16),
             Text(
-              '$studentId\n$studentName',
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 20),
+              studentName,
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
+            Text(studentId, style: const TextStyle(fontSize: 18)),
             const SizedBox(height: 16),
-            const Text(
-              'Mobile Programming Student',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.phone_android, size: 30),
+                SizedBox(width: 8),
+                Text(
+                  'Mobile Programming Student',
+                  style: TextStyle(fontSize: 18),
+                ),
+              ],
             ),
-            const SizedBox(height: 16),
-            const Icon(Icons.phone_android, size: 60),
-            
           ],
         ),
       ),
