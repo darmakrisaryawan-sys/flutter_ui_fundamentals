@@ -14,14 +14,27 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      title: 'Flutter UI Fundamentals',
       home: Scaffold(
         appBar: AppBar(title: const Text('Flutter UI Fundamentals')),
-        body: Center(
-          child: Text(
-            '$studentId\n$studentName',
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 20),
-          ),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              '$studentId\n$studentName',
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 20),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Mobile Programming Student',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16),
+            const Icon(Icons.phone_android, size: 60),
+            
+          ],
         ),
       ),
     );
