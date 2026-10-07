@@ -1,7 +1,18 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 const String studentName = 'Made Darma Krisaryawan';
 const String studentId = '2415051081';
+
+Future<Map<String, dynamic>> loadStudentData() async {
+  final jsonString = await rootBundle.loadString(
+    'assets/data/student_data.json',
+  );
+
+  return jsonDecode(jsonString) as Map<String, dynamic>;
+}
 
 Widget buildStatCard(String value, String label, IconData icon) {
   return Column(
@@ -72,135 +83,135 @@ class _GreetingCardState extends State<GreetingCard> {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  final List<Map<String, dynamic>> topics = const [
-    {'title': 'Dart Fundamentals', 'category': 'Dart', 'done': true},
-    {'title': 'Flutter UI Fundamentals', 'category': 'Flutter', 'done': true},
-    {'title': 'Git & GitHub', 'category': 'Version Control', 'done': false},
-    {'title': 'Widget Layout', 'category': 'Flutter UI', 'done': false},
-    {
-      'title': 'Made Darma Krisaryawan - 2415051081',
-      'category': 'Student',
-      'done': false,
-    },
-  ];
-
   @override
   Widget build(BuildContext context) {
-    final completedCount = topics.where((item) => item['done'] == true).length;
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter UI Fundamentals',
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Flutter UI Fundamentals')),
-        body: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const CircleAvatar(
-                radius: 46,
-                backgroundImage: AssetImage('assets/images/profile.jpg'),
-              ),
-              const SizedBox(height: 12),
+      home: const DashboardPage(),
+    );
+  }
+}
 
-              Text(
-                studentName,
+class DashboardPage extends StatelessWidget {
+  const DashboardPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Learning Dashboard')),
+      body: FutureBuilder<Map<String, dynamic>>(
+        future: loadStudentData(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(
+                'Terjadi error: ${snapshot.error}',
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
+              ),
+            );
+          }
+
+          if (!snapshot.hasData) {
+            return const Center(child: Text('Data tidak tersedia'));
+          }
+
+          final data = snapshot.data!;
+
+          final student = data['student'] as Map<String, dynamic>;
+
+          final courses = data['courses'] as List<dynamic>;
+
+          final nim = student['nim'] as String;
+          final name = student['name'] as String;
+
+          return Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                const CircleAvatar(
+                  radius: 46,
+                  backgroundImage: AssetImage('assets/images/profile.jpg'),
                 ),
-              ),
 
-              Text(studentId, style: const TextStyle(fontSize: 18)),
+                const SizedBox(height: 12),
 
-              const SizedBox(height: 12),
-
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.phone_android, size: 30),
-                  SizedBox(width: 8),
-                  Text(
-                    'Mobile Programming Student',
-                    style: TextStyle(fontSize: 18),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 16),
-
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      buildStatCard('3', 'Modul', Icons.menu_book),
-                      buildStatCard('5', 'Materi', Icons.book),
-                      buildStatCard(
-                        '$completedCount',
-                        'Selesai',
-                        Icons.check_circle,
-                      ),
-                    ],
+                Text(
+                  name,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-              ),
 
-              const SizedBox(height: 12),
+                Text(nim, style: const TextStyle(fontSize: 18)),
 
-              const GreetingCard(),
+                const SizedBox(height: 16),
 
-              const SizedBox(height: 12),
-
-              Text(
-                '$completedCount dari ${topics.length} topik selesai',
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-
-              const SizedBox(height: 8),
-
-              const Text(
-                'Materi Pembelajaran',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-
-              const SizedBox(height: 8),
-
-              Expanded(
-                child: ListView.builder(
-                  itemCount: topics.length,
-                  itemBuilder: (context, index) {
-                    final topic = topics[index];
-
-                    final bool isDone = topic['done'] == true;
-
-                    return Card(
-                      child: ListTile(
-                        leading: Icon(
-                          isDone
-                              ? Icons.check_circle
-                              : Icons.radio_button_unchecked,
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        buildStatCard(
+                          '${courses.length}',
+                          'Materi',
+                          Icons.book,
                         ),
-                        title: Text(topic['title']),
-                        subtitle: Text(
-                          '${topic['category']} • '
-                          '${isDone ? 'Selesai' : 'Belum selesai'}',
-                        ),
-                        trailing: Icon(isDone ? Icons.done : Icons.pending),
-                      ),
-                    );
-                  },
+                        buildStatCard('5', 'Kursus', Icons.school),
+                        buildStatCard('Aktif', 'Status', Icons.check_circle),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ),
+
+                const SizedBox(height: 16),
+
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Daftar Materi',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                ),
+
+                const SizedBox(height: 8),
+
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: courses.length,
+                    itemBuilder: (context, index) {
+                      final course = courses[index] as Map<String, dynamic>;
+
+                      return Card(
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            child: Text(course['code'].toString().substring(3)),
+                          ),
+                          title: Text(course['title']),
+                          subtitle: Text(
+                            '${course['code']} • '
+                            '${course['credits']} SKS',
+                          ),
+                          trailing: Text(
+                            course['status'],
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
