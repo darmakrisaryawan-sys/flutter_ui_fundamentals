@@ -16,53 +16,57 @@ class CourseExplorerApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Course Explorer',
       theme: ThemeData(colorSchemeSeed: Colors.indigo, useMaterial3: true),
-      home: const MainNavigationPage(),
+      home: const MainPage(),
     );
   }
 }
 
-class MainNavigationPage extends StatefulWidget {
-  const MainNavigationPage({super.key});
+class MainPage extends StatefulWidget {
+  const MainPage({super.key});
 
   @override
-  State<MainNavigationPage> createState() => _MainNavigationPageState();
+  State<MainPage> createState() => _MainPageState();
 }
 
-class _MainNavigationPageState extends State<MainNavigationPage> {
-  int currentIndex = 0;
-
-  final List<Widget> pages = const [
-    HomeScreen(),
-    CoursesScreen(),
-    ProfileScreen(),
-  ];
+class _MainPageState extends State<MainPage> {
+  int selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
+    final pages = [
+      HomePage(
+        onFeedback: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const FeedbackPage()),
+          );
+        },
+      ),
+      const CoursesPage(),
+      const ProfilePage(),
+    ];
+
     return LayoutBuilder(
       builder: (context, constraints) {
         if (constraints.maxWidth < 840) {
           return Scaffold(
-            body: pages[currentIndex],
+            body: pages[selectedIndex],
             bottomNavigationBar: NavigationBar(
-              selectedIndex: currentIndex,
+              selectedIndex: selectedIndex,
               onDestinationSelected: (index) {
-                setState(() => currentIndex = index);
+                setState(() => selectedIndex = index);
               },
               destinations: const [
                 NavigationDestination(
                   icon: Icon(Icons.home_outlined),
-                  selectedIcon: Icon(Icons.home),
                   label: 'Home',
                 ),
                 NavigationDestination(
                   icon: Icon(Icons.school_outlined),
-                  selectedIcon: Icon(Icons.school),
                   label: 'Courses',
                 ),
                 NavigationDestination(
                   icon: Icon(Icons.person_outline),
-                  selectedIcon: Icon(Icons.person),
                   label: 'Profile',
                 ),
               ],
@@ -74,31 +78,28 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
           body: Row(
             children: [
               NavigationRail(
-                selectedIndex: currentIndex,
-                onDestinationSelected: (index) {
-                  setState(() => currentIndex = index);
-                },
+                selectedIndex: selectedIndex,
                 labelType: NavigationRailLabelType.all,
+                onDestinationSelected: (index) {
+                  setState(() => selectedIndex = index);
+                },
                 destinations: const [
                   NavigationRailDestination(
                     icon: Icon(Icons.home_outlined),
-                    selectedIcon: Icon(Icons.home),
                     label: Text('Home'),
                   ),
                   NavigationRailDestination(
                     icon: Icon(Icons.school_outlined),
-                    selectedIcon: Icon(Icons.school),
                     label: Text('Courses'),
                   ),
                   NavigationRailDestination(
                     icon: Icon(Icons.person_outline),
-                    selectedIcon: Icon(Icons.person),
                     label: Text('Profile'),
                   ),
                 ],
               ),
               const VerticalDivider(width: 1),
-              Expanded(child: pages[currentIndex]),
+              Expanded(child: pages[selectedIndex]),
             ],
           ),
         );
@@ -107,43 +108,39 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
   }
 }
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class HomePage extends StatelessWidget {
+  final VoidCallback onFeedback;
+
+  const HomePage({super.key, required this.onFeedback});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Course Explorer')),
       body: Center(
-        child: SingleChildScrollView(
+        child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.menu_book, size: 80),
+              const Icon(Icons.menu_book, size: 72),
               const SizedBox(height: 16),
               Text(
-                'Selamat datang, $studentName',
+                studentName,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               Text('NIM: $studentId'),
-              const SizedBox(height: 24),
+              const SizedBox(height: 20),
               const Text(
-                'Jelajahi course dan kirimkan masukan '
-                'untuk pengembangan aplikasi.',
+                'Selamat datang di Course Explorer!',
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 20),
               FilledButton.icon(
-                icon: const Icon(Icons.feedback_outlined),
+                onPressed: onFeedback,
+                icon: const Icon(Icons.feedback),
                 label: const Text('Buka Form Feedback'),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const FeedbackFormPage()),
-                  );
-                },
               ),
             ],
           ),
@@ -153,82 +150,76 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class CoursesScreen extends StatelessWidget {
-  const CoursesScreen({super.key});
+class CoursesPage extends StatelessWidget {
+  const CoursesPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    const courses = [
+      'Flutter UI Fundamentals',
+      'Dart Programming',
+      'Responsive Design',
+    ];
+
     return Scaffold(
       appBar: AppBar(title: const Text('Courses')),
       body: ListView(
         padding: const EdgeInsets.all(16),
-        children: const [
-          ListTile(
-            leading: Icon(Icons.phone_android),
-            title: Text('Flutter UI Fundamentals'),
-            subtitle: Text('Layout, widget, dan navigasi'),
-          ),
-          ListTile(
-            leading: Icon(Icons.code),
-            title: Text('Dart Programming'),
-            subtitle: Text('Dasar pemrograman Dart'),
-          ),
-          ListTile(
-            leading: Icon(Icons.devices),
-            title: Text('Responsive Design'),
-            subtitle: Text('Tampilan adaptif'),
-          ),
-          SizedBox(height: 16),
-          Text('Pembuat: Made Darma Krisaryawan'),
-          Text('NIM: 2415051081'),
+        children: [
+          for (final course in courses)
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.school),
+                title: Text(course),
+                subtitle: const Text('Course pembelajaran'),
+              ),
+            ),
+          const SizedBox(height: 16),
+          Text('Nama: $studentName'),
+          Text('NIM: $studentId'),
         ],
       ),
     );
   }
 }
 
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+class ProfilePage extends StatelessWidget {
+  const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Profile')),
       body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: const [
-              CircleAvatar(radius: 42, child: Icon(Icons.person, size: 48)),
-              SizedBox(height: 16),
-              Text(
-                studentName,
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              Text('NIM: $studentId'),
-              Text('Kelas: PTI 5B'),
-            ],
-          ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const CircleAvatar(radius: 40, child: Icon(Icons.person, size: 44)),
+            const SizedBox(height: 16),
+            Text(studentName, textAlign: TextAlign.center),
+            Text('NIM: $studentId'),
+            const Text('Kelas: PTI 5B'),
+          ],
         ),
       ),
     );
   }
 }
 
-class FeedbackFormPage extends StatefulWidget {
-  const FeedbackFormPage({super.key});
+class FeedbackPage extends StatefulWidget {
+  const FeedbackPage({super.key});
 
   @override
-  State<FeedbackFormPage> createState() => _FeedbackFormPageState();
+  State<FeedbackPage> createState() => _FeedbackPageState();
 }
 
-class _FeedbackFormPageState extends State<FeedbackFormPage> {
+class _FeedbackPageState extends State<FeedbackPage> {
   final formKey = GlobalKey<FormState>();
   final nameController = TextEditingController(text: studentName);
   final nimController = TextEditingController(text: studentId);
   final commentController = TextEditingController();
+
+  bool isLoading = false;
 
   @override
   void dispose() {
@@ -238,28 +229,50 @@ class _FeedbackFormPageState extends State<FeedbackFormPage> {
     super.dispose();
   }
 
-  void submitForm() {
-    if (formKey.currentState!.validate()) {
-      FocusScope.of(context).unfocus();
-
-      showDialog<void>(
-        context: context,
-        builder: (dialogContext) => AlertDialog(
-          title: const Text('Validasi berhasil'),
-          content: Text(
-            'Nama: ${nameController.text}\n'
-            'NIM: ${nimController.text}\n'
-            'Komentar: ${commentController.text}',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(dialogContext),
-              child: const Text('Tutup'),
-            ),
-          ],
-        ),
-      );
+  Future<void> submitForm() async {
+    if (!formKey.currentState!.validate() || isLoading) {
+      return;
     }
+
+    FocusScope.of(context).unfocus();
+    setState(() => isLoading = true);
+
+    // Simulasi pemrosesan selama dua detik.
+    await Future.delayed(const Duration(seconds: 2));
+
+    if (!mounted) return;
+
+    setState(() => isLoading = false);
+
+    final name = nameController.text.trim();
+    final nim = nimController.text.trim();
+    final comment = commentController.text.trim();
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Feedback berhasil diproses'),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        icon: const Icon(Icons.check_circle, color: Colors.green, size: 42),
+        title: const Text('Feedback berhasil'),
+        content: Text(
+          'Nama: $name\n'
+          'NIM: $nim\n\n'
+          'Komentar:\n$comment',
+        ),
+        actions: [
+          FilledButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: const Text('Selesai'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -280,8 +293,8 @@ class _FeedbackFormPageState extends State<FeedbackFormPage> {
                 controller: nameController,
                 decoration: const InputDecoration(
                   labelText: 'Nama',
-                  prefixIcon: Icon(Icons.person),
                   border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.person),
                 ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
@@ -296,8 +309,8 @@ class _FeedbackFormPageState extends State<FeedbackFormPage> {
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
                   labelText: 'NIM',
-                  prefixIcon: Icon(Icons.badge),
                   border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.badge),
                 ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
@@ -313,8 +326,7 @@ class _FeedbackFormPageState extends State<FeedbackFormPage> {
                 maxLines: 5,
                 decoration: const InputDecoration(
                   labelText: 'Komentar',
-                  hintText: 'Tulis masukan minimal 5 karakter',
-                  alignLabelWithHint: true,
+                  hintText: 'Minimal 5 karakter',
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
@@ -326,9 +338,15 @@ class _FeedbackFormPageState extends State<FeedbackFormPage> {
               ),
               const SizedBox(height: 24),
               FilledButton.icon(
-                onPressed: submitForm,
-                icon: const Icon(Icons.send),
-                label: const Text('Kirim Feedback'),
+                onPressed: isLoading ? null : submitForm,
+                icon: isLoading
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.send),
+                label: Text(isLoading ? 'Memproses...' : 'Kirim Feedback'),
               ),
             ],
           ),
