@@ -14,62 +14,99 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Responsive Layout - Tahap 1',
+      title: 'MediaQuery - Tahap 2',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
         useMaterial3: true,
       ),
-      home: const ResponsiveProblemPage(),
+      home: const MediaQueryPage(),
     );
   }
 }
 
-class ResponsiveProblemPage extends StatelessWidget {
-  const ResponsiveProblemPage({super.key});
+class MediaQueryPage extends StatelessWidget {
+  const MediaQueryPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final orientation = MediaQuery.of(context).orientation;
+
+    final category = size.width < 600 ? 'Compact' : 'Wide';
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Tahap 1 - Fixed Width')),
+      appBar: AppBar(title: const Text('Tahap 2 - MediaQuery')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Text(
+            Text(
               '$studentId - $studentName',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
-            const Text(
-              'Percobaan A: Hard-coded Width = 500',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Informasi Layar',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const Divider(height: 24),
+                    Text(
+                      'Width: ${size.width.toStringAsFixed(0)}',
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Height: ${size.height.toStringAsFixed(0)}',
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Orientation: $orientation',
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Kategori: $category',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 16),
             Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.orange.shade200,
-                border: Border.all(color: Colors.deepOrange, width: 2),
+                color: category == 'Compact'
+                    ? Colors.teal.shade100
+                    : Colors.amber.shade100,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Text(
-                'Container dengan lebar tetap 500 pixel. '
-                'Amati apakah seluruh kotak terlihat pada layar.',
-                style: TextStyle(fontSize: 16),
+              child: Text(
+                category == 'Compact'
+                    ? 'Tampilan Compact: layar relatif sempit.'
+                    : 'Tampilan Wide: tersedia ruang horizontal lebih luas.',
+                style: const TextStyle(fontSize: 16),
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             const Text(
-              'Pengamatan',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'Uji tampilan ini pada emulator berukuran kecil. '
-              'Perhatikan apakah kotak melewati batas layar '
-              'atau menimbulkan ruang kosong berlebihan.',
+              'Putar emulator dari portrait ke landscape '
+              'untuk membandingkan ukuran layar.',
+              textAlign: TextAlign.center,
             ),
           ],
         ),
