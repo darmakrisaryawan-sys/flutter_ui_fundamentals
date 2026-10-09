@@ -14,295 +14,150 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'LayoutBuilder - Tahap 3',
+      title: 'Tahap 4 - Flexible Layout',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
         useMaterial3: true,
       ),
-      home: const BreakpointPage(),
+      home: const FlexibleLayoutPage(),
     );
   }
 }
 
-class BreakpointPage extends StatelessWidget {
-  const BreakpointPage({super.key});
+class FlexibleLayoutPage extends StatelessWidget {
+  const FlexibleLayoutPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Tahap 3 - Breakpoint')),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          final width = constraints.maxWidth;
-
-          if (width < 600) {
-            return const CompactLayout();
-          } else if (width < 840) {
-            return const MediumLayout();
-          } else {
-            return const ExpandedLayout();
-          }
-        },
-      ),
-    );
-  }
-}
-
-// LAYOUT COMPACT: untuk ruang sempit
-class CompactLayout extends StatelessWidget {
-  const CompactLayout({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const IdentityHeader(),
-          const SizedBox(height: 20),
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.blue.shade100,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: const Column(
-              children: [
-                Icon(Icons.smartphone, size: 60, color: Colors.blue),
-                SizedBox(height: 12),
-                Text(
-                  'COMPACT LAYOUT',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  'Lebar kurang dari 600 logical pixels.',
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16),
-          const LayoutInfoCard(
-            title: 'Susunan Vertikal',
-            description:
-                'Konten ditampilkan dalam satu kolom '
-                'agar sesuai dengan layar ponsel.',
-            icon: Icons.view_agenda,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// LAYOUT MEDIUM: untuk ruang menengah
-class MediumLayout extends StatelessWidget {
-  const MediumLayout({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const IdentityHeader(),
-          const SizedBox(height: 20),
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.orange.shade100,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: const Column(
-              children: [
-                Icon(Icons.tablet_android, size: 60, color: Colors.deepOrange),
-                SizedBox(height: 12),
-                Text(
-                  'MEDIUM LAYOUT',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  'Lebar 600 sampai kurang dari 840.',
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16),
-          const Row(
-            children: [
-              Expanded(
-                child: LayoutInfoCard(
-                  title: 'Panel A',
-                  description: 'Bagian pertama.',
-                  icon: Icons.dashboard,
-                ),
-              ),
-              SizedBox(width: 12),
-              Expanded(
-                child: LayoutInfoCard(
-                  title: 'Panel B',
-                  description: 'Bagian kedua.',
-                  icon: Icons.widgets,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// LAYOUT EXPANDED: untuk ruang lebar
-class ExpandedLayout extends StatelessWidget {
-  const ExpandedLayout({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const IdentityHeader(),
-          const SizedBox(height: 24),
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: Colors.green.shade100,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: const Row(
-              children: [
-                Icon(Icons.desktop_windows, size: 64, color: Colors.green),
-                SizedBox(width: 20),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'EXPANDED LAYOUT',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        'Lebar 840 logical pixels atau lebih. '
-                        'Konten dapat ditampilkan berdampingan.',
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 20),
-          const Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: LayoutInfoCard(
-                  title: 'Panel A',
-                  description:
-                      'Informasi utama ditampilkan '
-                      'di panel pertama.',
-                  icon: Icons.dashboard,
-                ),
-              ),
-              SizedBox(width: 16),
-              Expanded(
-                child: LayoutInfoCard(
-                  title: 'Panel B',
-                  description:
-                      'Informasi tambahan ditampilkan '
-                      'di panel kedua.',
-                  icon: Icons.view_quilt,
-                ),
-              ),
-              SizedBox(width: 16),
-              Expanded(
-                child: LayoutInfoCard(
-                  title: 'Panel C',
-                  description:
-                      'Panel tambahan memanfaatkan '
-                      'ruang horizontal.',
-                  icon: Icons.devices,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// Widget identitas yang digunakan ulang
-class IdentityHeader extends StatelessWidget {
-  const IdentityHeader({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
+      appBar: AppBar(title: const Text('Tahap 4 - Flexible Layout')),
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const Text(
-              'Identitas Mahasiswa',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              '$studentId - $studentName',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 24),
+
+            const Text(
+              '1. Expanded dengan Flex 2:1',
+              style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+
+            SizedBox(
+              height: 150,
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: buildPanel('Panel A', 'Flex 2', Colors.indigo),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    flex: 1,
+                    child: buildPanel('Panel B', 'Flex 1', Colors.teal),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 28),
+
+            const Text(
+              '2. Flexible',
+              style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade200,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.phone_android, size: 36),
+                  const SizedBox(width: 12),
+                  Flexible(
+                    child: Text(
+                      'Contoh Flexible: teks ini menyesuaikan '
+                      'ruang yang tersedia tanpa memaksa '
+                      'mengisi seluruh ruang.',
+                      style: const TextStyle(fontSize: 15),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 28),
+
+            const Text(
+              '3. Wrap dengan Enam Chip Skill',
+              style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: const [
+                Chip(avatar: Icon(Icons.code), label: Text('Dart')),
+                Chip(avatar: Icon(Icons.phone_android), label: Text('Flutter')),
+                Chip(avatar: Icon(Icons.web), label: Text('UI Design')),
+                Chip(avatar: Icon(Icons.storage), label: Text('Database')),
+                Chip(avatar: Icon(Icons.bug_report), label: Text('Debugging')),
+                Chip(avatar: Icon(Icons.cloud), label: Text('GitHub')),
+              ],
+            ),
+
+            const SizedBox(height: 28),
+
+            const Text(
+              '4. Kesimpulan Pengamatan',
+              style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            Text('Nama: $studentName'),
-            Text('NIM: $studentId'),
+            const Text(
+              'Perhatikan bahwa Panel A mendapatkan '
+              'porsi ruang lebih besar daripada Panel B. '
+              'Chip pada Wrap berpindah ke baris berikutnya '
+              'ketika lebar yang tersedia tidak cukup.',
+              style: TextStyle(fontSize: 15),
+            ),
           ],
         ),
       ),
     );
   }
-}
 
-// Widget informasi yang digunakan ulang
-class LayoutInfoCard extends StatelessWidget {
-  final String title;
-  final String description;
-  final IconData icon;
-
-  const LayoutInfoCard({
-    super.key,
-    required this.title,
-    required this.description,
-    required this.icon,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(icon, size: 32),
-            const SizedBox(height: 10),
-            Text(
-              title,
-              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+  Widget buildPanel(String title, String subtitle, Color color) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
             ),
-            const SizedBox(height: 8),
-            Text(description),
-          ],
-        ),
+          ),
+          const SizedBox(height: 8),
+          Text(subtitle, style: const TextStyle(color: Colors.white)),
+        ],
       ),
     );
   }
