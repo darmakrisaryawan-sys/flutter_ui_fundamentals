@@ -3,28 +3,6 @@ import 'package:flutter/material.dart';
 const String studentName = 'Made Darma Krisaryawan';
 const String studentId = '2415051081';
 
-const List<Map<String, dynamic>> courses = [
-  {
-    'title': 'Pemrograman Mobile',
-    'code': 'IF101',
-    'credits': 3,
-    'status': 'Aktif',
-  },
-  {
-    'title': 'Pemrograman Web',
-    'code': 'IF102',
-    'credits': 3,
-    'status': 'Aktif',
-  },
-  {'title': 'Basis Data', 'code': 'IF103', 'credits': 2, 'status': 'Selesai'},
-  {
-    'title': 'Jaringan Komputer',
-    'code': 'IF104',
-    'credits': 3,
-    'status': 'Aktif',
-  },
-];
-
 void main() {
   runApp(const MyApp());
 }
@@ -41,141 +19,153 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
         useMaterial3: true,
       ),
-      home: const HomePage(),
+      home: const MainNavigationPage(),
     );
   }
 }
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class MainNavigationPage extends StatefulWidget {
+  const MainNavigationPage({super.key});
 
-  Future<void> openCourse(
-    BuildContext context,
-    Map<String, dynamic> course,
-  ) async {
-    final bool? result = await Navigator.push<bool>(
-      context,
-      MaterialPageRoute(builder: (context) => CourseDetailPage(course: course)),
-    );
+  @override
+  State<MainNavigationPage> createState() => _MainNavigationPageState();
+}
 
-    if (!context.mounted) return;
+class _MainNavigationPageState extends State<MainNavigationPage> {
+  int currentIndex = 0;
 
-    if (result == true) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${course['title']} ditambahkan ke Favorite!')),
-      );
-    }
-  }
+  final List<Widget> pages = const [
+    HomeScreen(),
+    CoursesScreen(),
+    ProfileScreen(),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Course Explorer')),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          const Card(
-            child: ListTile(
-              leading: CircleAvatar(child: Icon(Icons.person)),
-              title: Text(studentName),
-              subtitle: Text(studentId),
-            ),
+      body: pages[currentIndex],
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: currentIndex,
+        onDestinationSelected: (index) {
+          setState(() {
+            currentIndex = index;
+          });
+        },
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.home_outlined),
+            selectedIcon: Icon(Icons.home),
+            label: 'Home',
           ),
-          const SizedBox(height: 16),
-          const Text(
-            'Daftar Course',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+          NavigationDestination(
+            icon: Icon(Icons.school_outlined),
+            selectedIcon: Icon(Icons.school),
+            label: 'Courses',
           ),
-          const SizedBox(height: 8),
-          for (final course in courses)
-            Card(
-              child: ListTile(
-                leading: const CircleAvatar(child: Icon(Icons.menu_book)),
-                title: Text(course['title'] as String),
-                subtitle: Text(
-                  '${course['code']} • '
-                  '${course['credits']} SKS',
-                ),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                onTap: () => openCourse(context, course),
-              ),
-            ),
+          NavigationDestination(
+            icon: Icon(Icons.person_outline),
+            selectedIcon: Icon(Icons.person),
+            label: 'Profile',
+          ),
         ],
       ),
     );
   }
 }
 
-class CourseDetailPage extends StatelessWidget {
-  final Map<String, dynamic> course;
-
-  const CourseDetailPage({super.key, required this.course});
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Detail Course')),
-      body: Padding(
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        const Card(
+          child: ListTile(
+            leading: CircleAvatar(child: Icon(Icons.person)),
+            title: Text(studentName),
+            subtitle: Text(studentId),
+          ),
+        ),
+        const SizedBox(height: 24),
+        const Text(
+          'Selamat Datang!',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 8),
+        const Text('Selamat belajar menggunakan Course Explorer.'),
+        const SizedBox(height: 20),
+        Card(
+          child: ListTile(
+            leading: const Icon(Icons.menu_book),
+            title: const Text('Jelajahi Course'),
+            subtitle: const Text('Lihat daftar materi pembelajaran.'),
+            trailing: const Icon(Icons.arrow_forward_ios),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class CoursesScreen extends StatelessWidget {
+  const CoursesScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    const courseNames = [
+      'Pemrograman Mobile',
+      'Pemrograman Web',
+      'Basis Data',
+      'Jaringan Komputer',
+    ];
+
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        const Text(
+          'Daftar Courses',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 12),
+        for (final course in courseNames)
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.school),
+              title: Text(course),
+              subtitle: const Text('Materi pembelajaran'),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class ProfileScreen extends StatelessWidget {
+  const ProfileScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            const Card(
-              child: ListTile(
-                leading: CircleAvatar(child: Icon(Icons.person)),
-                title: Text(studentName),
-                subtitle: Text(studentId),
-              ),
-            ),
-            const SizedBox(height: 24),
-            Text(
-              course['title'] as String,
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
+            const CircleAvatar(radius: 40, child: Icon(Icons.person, size: 40)),
             const SizedBox(height: 16),
-            Card(
-              child: Column(
-                children: [
-                  ListTile(
-                    leading: const Icon(Icons.tag),
-                    title: const Text('Kode Course'),
-                    subtitle: Text(course['code'] as String),
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.school),
-                    title: const Text('Jumlah SKS'),
-                    subtitle: Text('${course['credits']} SKS'),
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.info_outline),
-                    title: const Text('Status'),
-                    subtitle: Text(course['status'] as String),
-                  ),
-                ],
-              ),
-            ),
-            const Spacer(),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.pop(context, true);
-                },
-                icon: const Icon(Icons.favorite),
-                label: const Text('Pilih/Favorite'),
-              ),
+            const Text(
+              studentName,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(Icons.arrow_back),
-                label: const Text('Kembali tanpa Memilih'),
-              ),
-            ),
+            const Text('NIM: $studentId'),
+            const SizedBox(height: 8),
+            const Text('Program Studi: PTI'),
+            const Text('Kelas: PTI 5B'),
           ],
         ),
       ),
