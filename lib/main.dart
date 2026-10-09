@@ -3,6 +3,13 @@ import 'package:flutter/material.dart';
 const String studentName = 'Made Darma Krisaryawan';
 const String studentId = '2415051081';
 
+const List<String> courseNames = [
+  'Pemrograman Mobile',
+  'Pemrograman Web',
+  'Basis Data',
+  'Jaringan Komputer',
+];
+
 void main() {
   runApp(const MyApp());
 }
@@ -33,12 +40,6 @@ class MainNavigationPage extends StatefulWidget {
 
 class _MainNavigationPageState extends State<MainNavigationPage> {
   int currentIndex = 0;
-
-  final List<Widget> pages = const [
-    HomeScreen(),
-    CoursesScreen(),
-    ProfileScreen(),
-  ];
 
   Widget buildNavigationBar() {
     return NavigationBar(
@@ -103,6 +104,18 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
       builder: (context, constraints) {
         final bool isExpanded = constraints.maxWidth >= 840;
 
+        final List<Widget> pages = [
+          HomeScreen(
+            onExploreCourses: () {
+              setState(() {
+                currentIndex = 1;
+              });
+            },
+          ),
+          const CoursesScreen(),
+          const ProfileScreen(),
+        ];
+
         return Scaffold(
           appBar: AppBar(title: const Text('Course Explorer')),
           body: isExpanded
@@ -122,7 +135,9 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
 }
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  final VoidCallback onExploreCourses;
+
+  const HomeScreen({super.key, required this.onExploreCourses});
 
   @override
   Widget build(BuildContext context) {
@@ -142,32 +157,45 @@ class HomeScreen extends StatelessWidget {
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
-        const Text('Selamat belajar menggunakan Course Explorer.'),
+        const Text('Jelajahi materi pembelajaran di Course Explorer.'),
         const SizedBox(height: 20),
-        const Card(
-          child: ListTile(
-            leading: Icon(Icons.menu_book),
-            title: Text('Jelajahi Course'),
-            subtitle: Text('Lihat daftar materi pembelajaran.'),
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton.icon(
+            onPressed: onExploreCourses,
+            icon: const Icon(Icons.school),
+            label: const Text('Lihat Daftar Course'),
           ),
+        ),
+        const SizedBox(height: 12),
+        OutlinedButton.icon(
+          onPressed: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Selamat belajar di Course Explorer!'),
+              ),
+            );
+          },
+          icon: const Icon(Icons.notifications),
+          label: const Text('Tampilkan Pesan'),
         ),
       ],
     );
   }
 }
 
-class CoursesScreen extends StatelessWidget {
+class CoursesScreen extends StatefulWidget {
   const CoursesScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    const courseNames = [
-      'Pemrograman Mobile',
-      'Pemrograman Web',
-      'Basis Data',
-      'Jaringan Komputer',
-    ];
+  State<CoursesScreen> createState() => _CoursesScreenState();
+}
 
+class _CoursesScreenState extends State<CoursesScreen> {
+  final Set<String> favoriteCourses = {};
+
+  @override
+  Widget build(BuildContext context) {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -175,15 +203,48 @@ class CoursesScreen extends StatelessWidget {
           'Daftar Courses',
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
+        const SizedBox(height: 8),
+        const Text('Tekan kartu untuk melihat interaksi.'),
         const SizedBox(height: 12),
         for (final course in courseNames)
           Card(
-            child: ListTile(
-              leading: const Icon(Icons.school),
-              title: Text(course),
-              subtitle: const Text('Materi pembelajaran'),
+            clipBehavior: Clip.antiAlias,
+            child: InkWell(
+              onTap: () {
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text('Anda memilih $course')));
+              },
+              child: ListTile(
+                leading: const Icon(Icons.menu_book),
+                title: Text(course),
+                subtitle: const Text('Tekan kartu untuk memilih course'),
+                trailing: IconButton(
+                  tooltip: 'Favorite',
+                  icon: Icon(
+                    favoriteCourses.contains(course)
+                        ? Icons.favorite
+                        : Icons.favorite_border,
+                    color: favoriteCourses.contains(course) ? Colors.red : null,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      if (favoriteCourses.contains(course)) {
+                        favoriteCourses.remove(course);
+                      } else {
+                        favoriteCourses.add(course);
+                      }
+                    });
+                  },
+                ),
+              ),
             ),
           ),
+        const SizedBox(height: 12),
+        Text(
+          'Jumlah Favorite: ${favoriteCourses.length}',
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
       ],
     );
   }
@@ -200,7 +261,17 @@ class ProfileScreen extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const CircleAvatar(radius: 40, child: Icon(Icons.person, size: 40)),
+            GestureDetector(
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Profil mahasiswa dipilih.')),
+                );
+              },
+              child: const CircleAvatar(
+                radius: 44,
+                child: Icon(Icons.person, size: 44),
+              ),
+            ),
             const SizedBox(height: 16),
             const Text(
               studentName,
@@ -212,6 +283,11 @@ class ProfileScreen extends StatelessWidget {
             const SizedBox(height: 8),
             const Text('Program Studi: PTI'),
             const Text('Kelas: PTI 5B'),
+            const SizedBox(height: 16),
+            const Text(
+              'Tekan ikon profil untuk mencoba GestureDetector.',
+              textAlign: TextAlign.center,
+            ),
           ],
         ),
       ),
