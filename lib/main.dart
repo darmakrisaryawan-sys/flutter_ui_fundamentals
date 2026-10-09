@@ -49,6 +49,24 @@ class MyApp extends StatelessWidget {
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
+  Future<void> openCourse(
+    BuildContext context,
+    Map<String, dynamic> course,
+  ) async {
+    final bool? result = await Navigator.push<bool>(
+      context,
+      MaterialPageRoute(builder: (context) => CourseDetailPage(course: course)),
+    );
+
+    if (!context.mounted) return;
+
+    if (result == true) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('${course['title']} ditambahkan ke Favorite!')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,14 +97,7 @@ class HomePage extends StatelessWidget {
                   '${course['credits']} SKS',
                 ),
                 trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CourseDetailPage(course: course),
-                    ),
-                  );
-                },
+                onTap: () => openCourse(context, course),
               ),
             ),
         ],
@@ -146,12 +157,23 @@ class CourseDetailPage extends StatelessWidget {
             const Spacer(),
             SizedBox(
               width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.pop(context, true);
+                },
+                icon: const Icon(Icons.favorite),
+                label: const Text('Pilih/Favorite'),
+              ),
+            ),
+            const SizedBox(height: 8),
+            SizedBox(
+              width: double.infinity,
               child: OutlinedButton.icon(
                 onPressed: () {
                   Navigator.pop(context);
                 },
                 icon: const Icon(Icons.arrow_back),
-                label: const Text('Kembali ke Daftar'),
+                label: const Text('Kembali tanpa Memilih'),
               ),
             ),
           ],
