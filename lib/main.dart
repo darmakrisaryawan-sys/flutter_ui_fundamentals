@@ -40,36 +40,83 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
     ProfileScreen(),
   ];
 
+  Widget buildNavigationBar() {
+    return NavigationBar(
+      selectedIndex: currentIndex,
+      onDestinationSelected: (index) {
+        setState(() {
+          currentIndex = index;
+        });
+      },
+      destinations: const [
+        NavigationDestination(
+          icon: Icon(Icons.home_outlined),
+          selectedIcon: Icon(Icons.home),
+          label: 'Home',
+        ),
+        NavigationDestination(
+          icon: Icon(Icons.school_outlined),
+          selectedIcon: Icon(Icons.school),
+          label: 'Courses',
+        ),
+        NavigationDestination(
+          icon: Icon(Icons.person_outline),
+          selectedIcon: Icon(Icons.person),
+          label: 'Profile',
+        ),
+      ],
+    );
+  }
+
+  Widget buildNavigationRail() {
+    return NavigationRail(
+      selectedIndex: currentIndex,
+      onDestinationSelected: (index) {
+        setState(() {
+          currentIndex = index;
+        });
+      },
+      labelType: NavigationRailLabelType.all,
+      destinations: const [
+        NavigationRailDestination(
+          icon: Icon(Icons.home_outlined),
+          selectedIcon: Icon(Icons.home),
+          label: Text('Home'),
+        ),
+        NavigationRailDestination(
+          icon: Icon(Icons.school_outlined),
+          selectedIcon: Icon(Icons.school),
+          label: Text('Courses'),
+        ),
+        NavigationRailDestination(
+          icon: Icon(Icons.person_outline),
+          selectedIcon: Icon(Icons.person),
+          label: Text('Profile'),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Course Explorer')),
-      body: pages[currentIndex],
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: currentIndex,
-        onDestinationSelected: (index) {
-          setState(() {
-            currentIndex = index;
-          });
-        },
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.school_outlined),
-            selectedIcon: Icon(Icons.school),
-            label: 'Courses',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.person_outline),
-            selectedIcon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-      ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final bool isExpanded = constraints.maxWidth >= 840;
+
+        return Scaffold(
+          appBar: AppBar(title: const Text('Course Explorer')),
+          body: isExpanded
+              ? Row(
+                  children: [
+                    buildNavigationRail(),
+                    const VerticalDivider(width: 1, thickness: 1),
+                    Expanded(child: pages[currentIndex]),
+                  ],
+                )
+              : pages[currentIndex],
+          bottomNavigationBar: isExpanded ? null : buildNavigationBar(),
+        );
+      },
     );
   }
 }
@@ -97,12 +144,11 @@ class HomeScreen extends StatelessWidget {
         const SizedBox(height: 8),
         const Text('Selamat belajar menggunakan Course Explorer.'),
         const SizedBox(height: 20),
-        Card(
+        const Card(
           child: ListTile(
-            leading: const Icon(Icons.menu_book),
-            title: const Text('Jelajahi Course'),
-            subtitle: const Text('Lihat daftar materi pembelajaran.'),
-            trailing: const Icon(Icons.arrow_forward_ios),
+            leading: Icon(Icons.menu_book),
+            title: Text('Jelajahi Course'),
+            subtitle: Text('Lihat daftar materi pembelajaran.'),
           ),
         ),
       ],
